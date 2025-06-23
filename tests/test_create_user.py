@@ -1,6 +1,6 @@
 import allure
 import pytest
-from data import DataResponse
+from data import DataResponse, UserNegativeCases
 from generators import DataCreatedUser
 from user_methods import UserMethods
 
@@ -29,16 +29,14 @@ class TestCreatingUser:
         assert actual_body == expected_body
 
     @allure.title("Создание пользователя без заполненного одного из обязательных полей")
-    @pytest.mark.parametrize("email, password, name", [
-        ("", 123456, "ivanorlov"),
-        ("emailexample@derinntal.ru", "", "ivanorlov"),
-        ("emailexample@derinntal.ru", 123456, "")
-    ])
-    def test_create_user_with_missing_required_field_returns_error(self, email, password, name):
-        user_body = {"email": email, "password": password, "name": name}
+    @pytest.mark.parametrize("user_body", UserNegativeCases.user_negative_cases)
+    def test_create_user_with_missing_required_field_returns_error(self, user_body):
         response = UserMethods.created_user(user_body)
         expected_body = DataResponse.CREATING_USER_WITHOUT_FILLED_FIELD
         actual_body = response.json()
+
+        assert response.status_code == DataResponse.StatusCode.FORBIDDEN_403
+        assert actual_body == expected_body
 
         assert response.status_code == DataResponse.StatusCode.FORBIDDEN_403
         assert actual_body == expected_body

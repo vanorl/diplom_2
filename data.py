@@ -50,3 +50,10 @@ class DataResponse:
 
     class Common:
         TRUE_SUCCESS = True
+
+class UserNegativeCases:
+    user_negative_cases = [
+        {"email": "", "password": "123456", "name": "ivanorlov"},
+        {"email": "emailexample@derinntal.ru", "password": "", "name": "ivanorlov"},
+        {"email": "emailexample@derinntal.ru", "password": "123456", "name": ""}
+    ]
